@@ -4,9 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
 import { useCardimaStore } from "@/store/useCardimaStore"
-import { RotateCcw, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { useDebounce } from "@/hooks/useDebounce"
 import { toast } from "sonner"
 
@@ -35,7 +34,16 @@ export function BiometricSimulator({ patientId }: { patientId?: string }) {
                     age: debouncedAge
                 })
 
-                setPredictions(response.data.probabilities)
+                const { probabilities } = response.data
+                const scaledPredictions = {
+                    MI: (probabilities.MI || 0) * 100,
+                    STTC: (probabilities.STTC || 0) * 100,
+                    CD: (probabilities.CD || 0) * 100,
+                    HYP: (probabilities.HYP || 0) * 100,
+                    NORM: (probabilities.NORM || 0) * 100,
+                }
+
+                setPredictions(scaledPredictions)
                 toast.info("Risk Profile Updated", { duration: 1000, position: 'bottom-right' })
             } catch (error) {
                 console.error("Simulation failed", error)
@@ -50,78 +58,85 @@ export function BiometricSimulator({ patientId }: { patientId?: string }) {
     }, [debouncedAge, debouncedWeight, simulation.isSimulating, patientId, setPredictions])
 
     return (
-        <Card className="shadow-sm border border-white/5 bg-[#121620]/50 backdrop-blur-sm">
-            <CardHeader>
+        <Card className="shadow-none border border-white/5 bg-[#121620]/50 backdrop-blur-sm h-full flex flex-col">
+            <CardHeader className="shrink-0">
                 <div className="flex items-center justify-between">
                     <div>
                         <CardTitle className="text-xl font-heading text-white">Biometric Shift</CardTitle>
                         <CardDescription className="text-emerald-500/60">Simulate physiological changes</CardDescription>
                     </div>
-                    <div className="flex items-center space-x-2">
-                        {isCalculating && <Loader2 className="h-4 w-4 text-emerald-500 animate-spin mr-2" />}
-                        <Switch
-                            id="simulation-mode"
-                            checked={simulation.isSimulating}
-                            onCheckedChange={handleToggle}
-                            className="data-[state=checked]:bg-emerald-600"
-                        />
-                        <Label htmlFor="simulation-mode" className="text-xs font-semibold text-white/50">
-                            {simulation.isSimulating ? 'ACTIVE' : 'OFF'}
-                        </Label>
+                    <div className="flex items-center gap-4">
+                        {simulation.isSimulating && (
+                            <button
+                                onClick={resetSimulation}
+                                className="text-[10px] font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-widest transition-colors"
+                            >
+                                Reset
+                            </button>
+                        )}
+                        <div className="flex items-center space-x-2">
+                            {isCalculating && <Loader2 className="h-4 w-4 text-emerald-500 animate-spin mr-2" />}
+                            <Switch
+                                id="simulation-mode"
+                                checked={simulation.isSimulating}
+                                onCheckedChange={handleToggle}
+                                className="data-[state=checked]:bg-emerald-600"
+                            />
+                            <Label htmlFor="simulation-mode" className="text-[10px] font-bold text-white/50 uppercase">
+                                {simulation.isSimulating ? 'Active' : 'Off'}
+                            </Label>
+                        </div>
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-8 py-4 flex-1">
                 {/* Weight Slider */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                        <Label className="text-sm font-medium text-white/80">Weight Adjustment</Label>
-                        <span className="font-mono text-sm bg-white/5 text-emerald-400 px-2 py-1 rounded border border-white/5">
-                            {simulation.simulatedWeight} kg
-                        </span>
+                        <Label className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Weight Adjustment</Label>
+                        <div className="flex items-center gap-2">
+                            <span className="font-mono text-lg font-bold text-emerald-400">
+                                {simulation.simulatedWeight}
+                            </span>
+                            <span className="text-[10px] text-white/20 font-bold uppercase">kg</span>
+                        </div>
                     </div>
-                    <Slider
-                        disabled={!simulation.isSimulating}
-                        value={[simulation.simulatedWeight]}
-                        min={40}
-                        max={150}
-                        step={1}
-                        onValueChange={(vals) => setSimulation({ simulatedWeight: vals[0] })}
-                        className="[&_.range-thumb]:h-4 [&_.range-thumb]:w-4 [&_.range-track]:bg-white/10 [&_.range-range]:bg-emerald-500"
-                    />
+                    <div className="relative pt-2">
+                        <Slider
+                            disabled={!simulation.isSimulating}
+                            value={[simulation.simulatedWeight]}
+                            min={40}
+                            max={150}
+                            step={1}
+                            onValueChange={(vals) => setSimulation({ simulatedWeight: vals[0] })}
+                            className="[&_.range-thumb]:h-5 [&_.range-thumb]:w-5 [&_.range-thumb]:bg-white [&_.range-thumb]:border-none [&_.range-track]:bg-white/30 [&_.range-range]:bg-emerald-500 h-2"
+                        />
+                    </div>
                 </div>
 
                 {/* Age Slider */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                        <Label className="text-sm font-medium text-white/80">Age Projection</Label>
-                        <span className="font-mono text-sm bg-white/5 text-emerald-400 px-2 py-1 rounded border border-white/5">
-                            {simulation.simulatedAge} yrs
-                        </span>
+                        <Label className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Age Projection</Label>
+                        <div className="flex items-center gap-2">
+                            <span className="font-mono text-lg font-bold text-emerald-400">
+                                {simulation.simulatedAge}
+                            </span>
+                            <span className="text-[10px] text-white/20 font-bold uppercase">yrs</span>
+                        </div>
                     </div>
-                    <Slider
-                        disabled={!simulation.isSimulating}
-                        value={[simulation.simulatedAge]}
-                        min={18}
-                        max={100}
-                        step={1}
-                        onValueChange={(vals) => setSimulation({ simulatedAge: vals[0] })}
-                        className="[&_.range-thumb]:h-4 [&_.range-thumb]:w-4 [&_.range-track]:bg-white/10 [&_.range-range]:bg-emerald-500"
-                    />
+                    <div className="relative pt-2">
+                        <Slider
+                            disabled={!simulation.isSimulating}
+                            value={[simulation.simulatedAge]}
+                            min={18}
+                            max={100}
+                            step={1}
+                            onValueChange={(vals) => setSimulation({ simulatedAge: vals[0] })}
+                            className="[&_.range-thumb]:h-5 [&_.range-thumb]:w-5 [&_.range-thumb]:bg-white [&_.range-thumb]:border-none [&_.range-track]:bg-white/30 [&_.range-range]:bg-emerald-500 h-2"
+                        />
+                    </div>
                 </div>
-
-                {/* Reset Action */}
-                {simulation.isSimulating && (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full mt-4 gap-2 text-white/40 hover:text-white hover:bg-white/5"
-                        onClick={resetSimulation}
-                    >
-                        <RotateCcw className="h-3 w-3" />
-                        Reset Baseline
-                    </Button>
-                )}
             </CardContent>
         </Card>
     )

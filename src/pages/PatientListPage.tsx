@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Search, Plus, Filter, MoreHorizontal, User } from 'lucide-react'
+import { Search, Plus, Filter, User } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import api from '@/lib/api'
 import { useEffect, useState } from 'react'
@@ -102,65 +102,78 @@ export function PatientListPage() {
                                 <TableRow className="border-white/5 hover:bg-transparent">
                                     <TableHead className="text-white/50 w-[60px]">SR</TableHead>
                                     <TableHead className="text-white/50">Patient Name</TableHead>
+                                    <TableHead className="text-white/50">Gender</TableHead>
+                                    <TableHead className="text-white/50">Age</TableHead>
                                     <TableHead className="text-white/50">Status</TableHead>
+                                    <TableHead className="text-white/50">Prediction</TableHead>
                                     <TableHead className="text-white/50">Last Exam</TableHead>
-                                    <TableHead className="text-white/50">Diagnosis</TableHead>
-                                    <TableHead className="text-right text-white/50">Actions</TableHead>
+
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {filteredPatients.length === 0 ? (
                                     <TableRow className="border-white/5 hover:bg-transparent">
-                                        <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                                        <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
                                             No patients found. Add a patient to get started.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    filteredPatients.map((patient, index) => (
-                                        <TableRow
-                                            key={patient._id}
-                                            className="border-white/5 hover:bg-white/[0.02] cursor-pointer group transition-colors"
-                                            onClick={() => navigate(`/dashboard/${patient._id}`)}
-                                        >
-                                            <TableCell className="font-mono text-xs text-white/40 group-hover:text-emerald-500 transition-colors">
-                                                {String(index + 1).padStart(2, '0')}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 text-white/50 group-hover:border-emerald-500/30 group-hover:text-emerald-400 transition-all">
-                                                        <User className="h-4 w-4" />
-                                                    </div>
-                                                    <div className="flex flex-col">
+                                    filteredPatients.map((patient, index) => {
+                                        // Calculate Primary Diagnosis
+                                        let primaryDiagnosis = 'Unknown';
+                                        if (patient.diagnostic_probabilities) {
+                                            const entries = Object.entries(patient.diagnostic_probabilities);
+                                            if (entries.length > 0) {
+                                                const sorted = entries.sort(([, a], [, b]) => b - a);
+                                                const [key, val] = sorted[0];
+                                                primaryDiagnosis = `${key} (${(val * 100).toFixed(0)}%)`;
+                                                // If NORM is highest, maybe just show NORM
+                                                if (key === 'NORM') primaryDiagnosis = 'Normal Sinus Rhythm';
+                                            }
+                                        }
+
+                                        return (
+                                            <TableRow
+                                                key={patient._id}
+                                                className="border-white/5 hover:bg-white/[0.02] cursor-pointer group transition-colors"
+                                                onClick={() => navigate(`/dashboard/${patient._id}`)}
+                                            >
+                                                <TableCell className="font-mono text-xs text-white/40 group-hover:text-emerald-500 transition-colors">
+                                                    {String(index + 1).padStart(2, '0')}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 text-white/50 group-hover:border-emerald-500/30 group-hover:text-emerald-400 transition-all">
+                                                            <User className="h-4 w-4" />
+                                                        </div>
                                                         <span className="font-medium text-white group-hover:text-emerald-300 transition-colors">{patient.name}</span>
-                                                        <span className="text-xs text-muted-foreground">
-                                                            {patient.demographics?.sex || '-'}, {patient.demographics?.age || '-'}y
-                                                        </span>
                                                     </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge className={
-                                                    patient.status === 'Critical' ? 'bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border-rose-500/20' :
-                                                        patient.status === 'Monitoring' ? 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border-amber-500/20' :
-                                                            patient.status === 'Stable' ? 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border-emerald-500/20' :
-                                                                'bg-white/10 text-white/50 border-white/10'
-                                                }>
-                                                    {(patient.status || 'UNKNOWN').toUpperCase()}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-muted-foreground text-sm">
-                                                {patient.last_ecg_date ? new Date(patient.last_ecg_date).toLocaleDateString() : 'N/A'}
-                                            </TableCell>
-                                            <TableCell className="text-white/80 text-sm">
-                                                {patient.predicted_risk_level} Risk
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-white hover:bg-white/10">
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                                </TableCell>
+                                                <TableCell className="text-white/70 text-sm">
+                                                    {patient.demographics?.sex === 'M' ? 'Male' : patient.demographics?.sex === 'F' ? 'Female' : patient.demographics?.sex || '-'}
+                                                </TableCell>
+                                                <TableCell className="text-white/70 text-sm">
+                                                    {patient.demographics?.age || '-'}y
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge className={
+                                                        (patient.predicted_risk_level?.toUpperCase() === 'HIGH') ? 'bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border-rose-500/20' :
+                                                            (patient.predicted_risk_level?.toUpperCase() === 'MEDIUM') ? 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border-amber-500/20' :
+                                                                'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border-emerald-500/20'
+                                                    }>
+                                                        {patient.predicted_risk_level?.toUpperCase() || 'UNKNOWN'}
+                                                    </Badge>
+                                                </TableCell>
+
+                                                <TableCell className="text-white/80 text-sm font-medium">
+                                                    {primaryDiagnosis}
+                                                </TableCell>
+                                                <TableCell className="text-muted-foreground text-sm">
+                                                    {patient.last_ecg_date ? new Date(patient.last_ecg_date).toLocaleDateString() : 'N/A'}
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })
                                 )}
                             </TableBody>
                         </Table>

@@ -47,9 +47,18 @@ export interface Patient {
         CD: number
         HYP: number
     }
-    predicted_risk_level: 'Low' | 'Medium' | 'High'
+    predicted_risk_level: 'Low' | 'Medium' | 'High' | 'HIGH' | 'LOW' | 'MEDIUM'
+    verdict?: string
     doctor_validation: string
     raw_ecg_path?: string
+    ai_analysis?: {
+        recommended_tests: string[]
+        validation_checklist: {
+            question: string
+            is_relevant: boolean
+        }[]
+        narrative_report: string
+    }
 }
 
 interface CardimaStore {
