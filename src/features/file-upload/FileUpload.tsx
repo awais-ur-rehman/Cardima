@@ -29,7 +29,7 @@ export function FileUpload() {
     }
 
     return (
-        <Card className="col-span-full shadow-sm border-dashed border-2">
+        <Card className="shadow-sm border border-white/5 bg-[#121620]/50 backdrop-blur-sm">
             <CardHeader>
                 <CardTitle>Data Integration</CardTitle>
                 <CardDescription>Upload hospital export files (XML, DICOM-ECG)</CardDescription>
