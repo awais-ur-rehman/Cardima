@@ -15,11 +15,11 @@ export function EmergencyMonitor() {
     const { predictions } = useCardimaStore()
 
     // Critical threshold logic
-    const isCritical = predictions.mi > 90 || predictions.cd > 90
+    const isCritical = predictions.MI > 90 || predictions.CD > 90
 
     // Determine the specific danger
-    const dangerType = predictions.mi > 90 ? "Acute Myocardial Infarction Detected" :
-        predictions.cd > 90 ? "Critical Conduction Disturbance" : "Unknown Critical State"
+    const dangerType = predictions.MI > 90 ? "Acute Myocardial Infarction Detected" :
+        predictions.CD > 90 ? "Critical Conduction Disturbance" : "Unknown Critical State"
 
     return (
         <AlertDialog open={isCritical}>
