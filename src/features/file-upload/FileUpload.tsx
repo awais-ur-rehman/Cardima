@@ -29,7 +29,7 @@ export function FileUpload() {
     }
 
     return (
-        <Card className="shadow-sm border border-white/5 bg-[#121620]/50 backdrop-blur-sm">
+        <Card className="shadow-sm border border-border bg-card text-card-foreground">
             <CardHeader>
                 <CardTitle>Data Integration</CardTitle>
                 <CardDescription>Upload hospital export files (XML, DICOM-ECG)</CardDescription>
@@ -46,7 +46,7 @@ export function FileUpload() {
                         <div className="p-4 bg-secondary rounded-full mb-4">
                             <Upload className="h-6 w-6 text-muted-foreground" />
                         </div>
-                        <p className="mb-2 text-sm font-medium">
+                        <p className="mb-2 text-sm font-medium text-foreground">
                             Drag & Drop or <span className="text-primary cursor-pointer hover:underline" onClick={() => document.getElementById('file-upload')?.click()}>Browse</span>
                         </p>
                         <p className="text-xs text-muted-foreground">Supported formats: .xml, .dcm</p>
@@ -59,13 +59,13 @@ export function FileUpload() {
                         />
                     </div>
                 ) : (
-                    <div className="flex items-center justify-between p-4 border rounded-lg bg-secondary/20">
+                    <div className="flex items-center justify-between p-4 border rounded-lg bg-secondary/50 border-border">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-primary/10 rounded">
                                 <FileText className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                                <p className="text-sm font-medium">{file.name}</p>
+                                <p className="text-sm font-medium text-foreground">{file.name}</p>
                                 <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(2)} KB</p>
                             </div>
                         </div>

@@ -4,10 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Activity, Lock, Mail } from 'lucide-react'
+import { Activity, Lock, Mail, Eye, EyeOff, LogIn, HelpCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import api from '@/lib/api'
 import { useCardimaStore } from '@/store/useCardimaStore'
 import { toast } from 'sonner'
@@ -16,6 +17,7 @@ import { toast } from 'sonner'
 const loginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(1, "Password is required"),
+    rememberMe: z.boolean().optional(),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>
@@ -23,12 +25,14 @@ type LoginFormValues = z.infer<typeof loginSchema>
 export function LoginPage() {
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
-            email: 'demo@cardima.ai',
-            password: 'password123',
+            email: 'doctor@cardima.ai',
+            password: 'breakthrough2026',
+            rememberMe: false,
         },
     })
 
@@ -37,7 +41,7 @@ export function LoginPage() {
     const onSubmit = async (data: LoginFormValues) => {
         setIsLoading(true)
         try {
-            const response = await api.post('/auth/login', data)
+            const response = await api.post('/auth/login', { email: data.email, password: data.password })
             const { accessToken, doctor } = response.data
 
             setAuth(doctor, accessToken)
@@ -52,134 +56,141 @@ export function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen w-full flex bg-[#050505] text-white overflow-hidden font-sans">
-            {/* Left Side: Emerald Gradient Branding */}
+        <div className="min-h-screen w-full flex bg-background text-foreground font-sans">
+            {/* Left Side: Brand Section */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="hidden lg:flex flex-col justify-between w-[50%] relative overflow-hidden p-16"
+                transition={{ duration: 0.8 }}
+                className="hidden lg:flex flex-col justify-between w-[45%] xl:w-[50%] relative overflow-hidden p-16 bg-[#002B5C]"
             >
-                {/* Background Gradients */}
-                <div className="absolute inset-0 bg-[#0A0A0A]">
-                    <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-900/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-teal-900/10 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3" />
-                    <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[80px] -translate-x-1/2 -translate-y-1/2" />
-                </div>
-
                 {/* Content */}
-                <div className="relative z-10 h-full flex flex-col justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                            <Activity className="h-5 w-5 text-white" />
+                <div className="relative z-10 h-full flex flex-col justify-between text-white">
+                    {/* Logo Area */}
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center shadow-lg border border-white/10">
+                            <Activity className="h-6 w-6 text-white" />
                         </div>
-                        <span className="text-xl font-heading font-bold tracking-tight">Cardima AI</span>
+                        <span className="text-xl font-heading font-bold tracking-tight">Cardima</span>
                     </div>
 
-                    <div className="space-y-8 max-w-lg">
-                        <h1 className="text-5xl font-heading font-bold leading-[1.1] tracking-tight">
-                            Precision <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Cardiac Analytics</span>
+                    {/* Hero Text */}
+                    <div className="space-y-6 max-w-xl">
+                        <h1 className="text-5xl xl:text-6xl font-heading font-bold leading-[1.1] tracking-tight text-white drop-shadow-sm">
+                            Securing the <br />
+                            future of patient <br />
+                            care.
                         </h1>
-                        <p className="text-lg text-white/50 leading-relaxed font-light">
-                            The next generation of AI-powered electrocardiagram analysis.
-                            Detect anomalies with hospital-grade accuracy in real-time.
+                        <p className="text-lg text-blue-100/80 leading-relaxed font-light max-w-md">
+                            Dedicated infrastructure for modern healthcare practitioners. Manage clinical data with confidence in an environment designed for precision.
                         </p>
-
-                        {/* Feature Steps */}
-                        <div className="grid grid-cols-3 gap-4 pt-8">
-                            <FeatureStep number="01" title="Upload" desc="Drag & drop ECG files" />
-                            <FeatureStep number="02" title="Analyze" desc="AI-driven inference" />
-                            <FeatureStep number="03" title="Report" desc="Detailed diagnostics" />
-                        </div>
                     </div>
 
-                    <div className="text-sm text-white/30 font-mono">
-                        v2.4.0-stable build.8921
+                    {/* Footer */}
+                    <div className="space-y-4">
+                        <div className="text-xs text-white/40 font-mono">
+                            &copy; 2026 Cardima Systems. All rights reserved.
+                        </div>
                     </div>
                 </div>
             </motion.div>
 
-            {/* Right Side: Compact Login Form */}
+            {/* Right Side: Login Form */}
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="flex-1 flex flex-col items-center justify-center p-8 lg:p-12 relative z-20 bg-[#050505]"
+                className="flex-1 flex flex-col items-center justify-center p-8 lg:p-16 relative z-20 bg-white"
             >
-                <div className="w-full max-w-[400px] space-y-8">
-                    <div className="space-y-2 text-center lg:text-left">
-                        <h2 className="text-3xl font-bold font-heading tracking-tight">Welcome Back</h2>
-                        <p className="text-white/40 text-sm">Enter your credentials to access the workspace.</p>
+                <div className="w-full max-w-[480px] space-y-10">
+                    <div className="space-y-3">
+                        <h2 className="text-4xl font-bold font-heading tracking-tight text-slate-900">Welcome Back</h2>
+                        <p className="text-slate-500 text-base leading-relaxed">
+                            Access your secure medical dashboard to manage patient records and institutional tasks.
+                        </p>
                     </div>
 
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <div className="space-y-4">
+                        <div className="space-y-5">
                             <div className="space-y-2">
-                                <Label className="text-xs font-medium text-white/70 ml-1">Email Address</Label>
+                                <Label className="text-sm font-semibold text-slate-700 ml-1">Institutional Email</Label>
                                 <div className="relative group">
-                                    <Mail className="absolute left-3 top-3 h-4 w-4 text-white/30 group-focus-within:text-emerald-400 transition-colors" />
+                                    <Mail className="absolute left-3.5 top-3.5 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
                                     <Input
                                         {...form.register('email')}
-                                        className="pl-10 h-11 bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-emerald-500/50 focus:bg-emerald-500/5 focus:ring-0 rounded-xl transition-all"
-                                        placeholder="doctor@hospital.com"
+                                        className="pl-11 h-12 bg-white border-slate-200 text-slate-900 font-medium placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-lg transition-all text-base"
+                                        placeholder="dr.smith@hospital.org"
                                     />
                                 </div>
                                 {form.formState.errors.email && (
-                                    <p className="text-[10px] text-rose-400 font-medium ml-1">{form.formState.errors.email.message}</p>
+                                    <p className="text-xs text-destructive font-medium ml-1 mt-1">{form.formState.errors.email.message}</p>
                                 )}
                             </div>
 
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center ml-1">
-                                    <Label className="text-xs font-medium text-white/70">Password</Label>
-                                    <a href="#" className="text-[10px] text-emerald-400 hover:text-emerald-300 transition-colors">Forgot password?</a>
+                                    <Label className="text-sm font-semibold text-slate-700">Password</Label>
+                                    <a href="#" className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors">Forgot password?</a>
                                 </div>
                                 <div className="relative group">
-                                    <Lock className="absolute left-3 top-3 h-4 w-4 text-white/30 group-focus-within:text-emerald-400 transition-colors" />
+                                    <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
                                     <Input
                                         {...form.register('password')}
-                                        type="password"
-                                        className="pl-10 h-11 bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-emerald-500/50 focus:bg-emerald-500/5 focus:ring-0 rounded-xl transition-all font-mono tracking-wider"
+                                        type={showPassword ? "text" : "password"}
+                                        className="pl-11 pr-11 h-12 bg-white border-slate-200 text-slate-900 font-medium placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-lg transition-all font-mono tracking-wider text-base"
                                         placeholder="••••••••"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 transition-colors"
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="h-5 w-5" />
+                                        ) : (
+                                            <Eye className="h-5 w-5" />
+                                        )}
+                                    </button>
                                 </div>
                                 {form.formState.errors.password && (
-                                    <p className="text-[10px] text-rose-400 font-medium ml-1">{form.formState.errors.password.message}</p>
+                                    <p className="text-xs text-destructive font-medium ml-1 mt-1">{form.formState.errors.password.message}</p>
                                 )}
                             </div>
                         </div>
 
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="rememberMe"
+                                onCheckedChange={(checked: boolean | 'indeterminate') => form.setValue('rememberMe', checked === true)}
+                                className="border-slate-300 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                            />
+                            <Label htmlFor="rememberMe" className="text-sm font-medium text-slate-600 cursor-pointer select-none">
+                                Remember this device for 30 days
+                            </Label>
+                        </div>
+
                         <Button
                             type="submit"
-                            className="w-full h-11 bg-white text-black hover:bg-emerald-50 hover:text-black font-semibold rounded-xl text-sm transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(16,185,129,0.3)]"
+                            className="w-full h-12 bg-[#0059b2] hover:bg-[#004a94] text-white font-bold rounded-lg text-base transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-2"
                             disabled={isLoading}
                         >
-                            {isLoading ? "Authenticating..." : "Sign In to Workspace"}
+                            <LogIn className="w-5 h-5" />
+                            {isLoading ? "Authenticating..." : "Secure Sign In"}
                         </Button>
-
-
                     </form>
 
-                    <p className="text-center text-[10px] text-white/30">
-                        By continuing, you agree to Cardima's <a href="#" className="underline hover:text-white underline-offset-2">Terms of Service</a> and <a href="#" className="underline hover:text-white underline-offset-2">Privacy Policy</a>.
-                    </p>
+                    <div className="pt-2 text-center">
+                        <p className="text-sm text-slate-500 font-medium">
+                            Having trouble signing in? <a href="#" className="text-[#0059b2] hover:underline font-bold">Contact IT Support</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div className="absolute bottom-8 flex items-center gap-2 text-slate-400 text-sm font-medium hover:text-slate-600 transition-colors cursor-pointer">
+                    <HelpCircle className="h-4 w-4" />
+                    Help Center & Documentation
                 </div>
             </motion.div>
-        </div>
-    )
-}
-
-function FeatureStep({ number, title, desc }: { number: string, title: string, desc: string }) {
-    return (
-        <div className="space-y-2 p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
-            <div className="h-8 w-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold font-mono">
-                {number}
-            </div>
-            <div>
-                <h4 className="font-semibold text-white/90 text-sm">{title}</h4>
-                <p className="text-xs text-white/40 leading-snug">{desc}</p>
-            </div>
         </div>
     )
 }

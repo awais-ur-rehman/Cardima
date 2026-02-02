@@ -18,26 +18,26 @@ export function ErrorPage() {
     }
 
     return (
-        <div className="min-h-screen w-full bg-[#050505] text-white flex flex-col items-center justify-center p-4 font-sans">
+        <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 font-sans">
             <div className="max-w-md w-full text-center space-y-8">
                 <div className="relative mx-auto w-24 h-24">
-                    <div className="absolute inset-0 bg-rose-500/20 rounded-full animate-pulse" />
-                    <div className="relative flex items-center justify-center w-full h-full rounded-full border-2 border-rose-500/50 bg-[#050505]">
-                        <AlertCircle className="h-10 w-10 text-rose-500" />
+                    <div className="absolute inset-0 bg-destructive/10 rounded-full animate-pulse" />
+                    <div className="relative flex items-center justify-center w-full h-full rounded-full border-2 border-destructive/20 bg-background">
+                        <AlertCircle className="h-10 w-10 text-destructive" />
                     </div>
                 </div>
 
                 <div className="space-y-2">
-                    <h1 className="text-3xl font-bold tracking-tight text-white font-heading">
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground font-heading">
                         Critical Error
                     </h1>
-                    <p className="text-white/60 text-sm">
+                    <p className="text-muted-foreground text-sm">
                         The application encountered an unexpected state and cannot continue.
                     </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-rose-950/20 border border-rose-500/20 text-left">
-                    <p className="font-mono text-xs text-rose-200/80 break-all">
+                <div className="p-4 rounded-lg bg-destructive/5 border border-destructive/10 text-left">
+                    <p className="font-mono text-xs text-destructive break-all">
                         {errorMessage}
                     </p>
                 </div>
@@ -46,14 +46,14 @@ export function ErrorPage() {
                     <Button
                         variant="outline"
                         onClick={() => window.location.reload()}
-                        className="border-white/10 hover:bg-white/5 hover:text-white"
+                        className="border-input hover:bg-muted"
                     >
                         <RotateCcw className="mr-2 h-4 w-4" />
                         Reload Application
                     </Button>
                     <Button
                         onClick={() => navigate('/')}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
                         <Home className="mr-2 h-4 w-4" />
                         Return Home

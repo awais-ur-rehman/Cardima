@@ -5,31 +5,49 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Darker background for Emerald Dark theme */
-  --background: 0 0% 2%;
-  --foreground: 213 31% 91%;
+  /* Cardima Light Theme - Clinical Precision */
+  /* Main background: Medical Gray */
+  --background: 210 20% 98%; /* #F8FAFC */
+  /* Main text: Deep Charcoal */
+  --foreground: 222 47% 11%; /* #1E293B */
 
-  --card: 0 0% 3%;
-  --card-foreground: 213 31% 91%;
+  /* Cards: Sterile White */
+  --card: 0 0% 100%; /* #FFFFFF */
+  --card-foreground: 222 47% 11%; /* #1E293B */
 
-  --popover: 0 0% 3%;
-  --popover-foreground: 215 20.2% 65.1%;
+  /* Popovers: Sterile White */
+  --popover: 0 0% 100%; /* #FFFFFF */
+  --popover-foreground: 222 47% 11%; /* #1E293B */
 
-  /* Subtle border */
-  --border: 0 0% 12%;
-  --input: 0 0% 12%;
+  /* Primary: Clinical Blue */
+  --primary: 210 100% 35%; /* #0059b2 */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
 
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
+  /* Secondary: Medical Gray (slightly darker for contrast if needed, or keeping same as bg) */
+  --secondary: 210 40% 96.1%; /* f1f5f9 - Slate 100, close to Medical Gray but distinct enough for secondary buttons */
+  --secondary-foreground: 210 100% 35%; /* #0059b2 */
 
-  --destructive: 0 62.8% 30.6%;
+  /* Muted: Divider Mist / Muted Slate */
+  --muted: 210 40% 96.1%; /* Slate 100 */
+  --muted-foreground: 215 16% 47%; /* #64748B - Muted Slate */
+
+  /* Accent: Clinical Blue (low opacity) or similar - typically used for hover states in shadcn */
+  --accent: 210 40% 96.1%; /* Slate 100 */
+  --accent-foreground: 210 100% 35%; /* #0059b2 */
+
+  /* Destructive: Standard Red */
+  --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224 71% 4%;
+  /* Borders & Inputs: Divider Mist */
+  --border: 214.3 31.8% 91.4%; /* #E2E8F0 */
+  --input: 214.3 31.8% 91.4%; /* #E2E8F0 */
+  
+  /* Ring: Clinical Blue */
+  --ring: 210 100% 35%; /* #0059b2 */
 
-  --radius: 0.75rem;
+  /* Radius: 8px */
+  --radius: 0.5rem;
 }
 
 @theme inline {
@@ -57,7 +75,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: 'Inter', sans-serif;
-  --font-heading: 'Outfit', sans-serif;
+  --font-heading: 'Inter', sans-serif; /* Unified font family */
   --font-mono: 'Space Mono', monospace;
 }
 

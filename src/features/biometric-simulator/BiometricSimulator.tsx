@@ -58,31 +58,31 @@ export function BiometricSimulator({ patientId }: { patientId?: string }) {
     }, [debouncedAge, debouncedWeight, simulation.isSimulating, patientId, setPredictions])
 
     return (
-        <Card className="shadow-none border border-white/5 bg-[#121620]/50 backdrop-blur-sm h-full flex flex-col">
+        <Card className="shadow-sm border border-border bg-card text-card-foreground h-full flex flex-col">
             <CardHeader className="shrink-0">
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="text-xl font-heading text-white">Biometric Shift</CardTitle>
-                        <CardDescription className="text-emerald-500/60">Simulate physiological changes</CardDescription>
+                        <CardTitle className="text-xl font-heading text-foreground">Biometric Shift</CardTitle>
+                        <CardDescription className="text-primary/80">Simulate physiological changes</CardDescription>
                     </div>
                     <div className="flex items-center gap-4">
                         {simulation.isSimulating && (
                             <button
                                 onClick={resetSimulation}
-                                className="text-[10px] font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-widest transition-colors"
+                                className="text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-widest transition-colors"
                             >
                                 Reset
                             </button>
                         )}
                         <div className="flex items-center space-x-2">
-                            {isCalculating && <Loader2 className="h-4 w-4 text-emerald-500 animate-spin mr-2" />}
+                            {isCalculating && <Loader2 className="h-4 w-4 text-primary animate-spin mr-2" />}
                             <Switch
                                 id="simulation-mode"
                                 checked={simulation.isSimulating}
                                 onCheckedChange={handleToggle}
-                                className="data-[state=checked]:bg-emerald-600"
+                                className="data-[state=checked]:bg-primary"
                             />
-                            <Label htmlFor="simulation-mode" className="text-[10px] font-bold text-white/50 uppercase">
+                            <Label htmlFor="simulation-mode" className="text-[10px] font-bold text-muted-foreground uppercase">
                                 {simulation.isSimulating ? 'Active' : 'Off'}
                             </Label>
                         </div>
@@ -93,12 +93,12 @@ export function BiometricSimulator({ patientId }: { patientId?: string }) {
                 {/* Weight Slider */}
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                        <Label className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Weight Adjustment</Label>
+                        <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Weight Adjustment</Label>
                         <div className="flex items-center gap-2">
-                            <span className="font-mono text-lg font-bold text-emerald-400">
+                            <span className="font-mono text-lg font-bold text-primary">
                                 {simulation.simulatedWeight}
                             </span>
-                            <span className="text-[10px] text-white/20 font-bold uppercase">kg</span>
+                            <span className="text-[10px] text-muted-foreground/70 font-bold uppercase">kg</span>
                         </div>
                     </div>
                     <div className="relative pt-2">
@@ -109,7 +109,7 @@ export function BiometricSimulator({ patientId }: { patientId?: string }) {
                             max={150}
                             step={1}
                             onValueChange={(vals) => setSimulation({ simulatedWeight: vals[0] })}
-                            className="[&_.range-thumb]:h-5 [&_.range-thumb]:w-5 [&_.range-thumb]:bg-white [&_.range-thumb]:border-none [&_.range-track]:bg-white/30 [&_.range-range]:bg-emerald-500 h-2"
+                            className="[&_.range-thumb]:h-5 [&_.range-thumb]:w-5 [&_.range-thumb]:bg-background [&_.range-thumb]:border-[2px] [&_.range-thumb]:border-primary [&_.range-track]:bg-secondary [&_.range-range]:bg-primary h-2"
                         />
                     </div>
                 </div>
@@ -117,12 +117,12 @@ export function BiometricSimulator({ patientId }: { patientId?: string }) {
                 {/* Age Slider */}
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                        <Label className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Age Projection</Label>
+                        <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Age Projection</Label>
                         <div className="flex items-center gap-2">
-                            <span className="font-mono text-lg font-bold text-emerald-400">
+                            <span className="font-mono text-lg font-bold text-primary">
                                 {simulation.simulatedAge}
                             </span>
-                            <span className="text-[10px] text-white/20 font-bold uppercase">yrs</span>
+                            <span className="text-[10px] text-muted-foreground/70 font-bold uppercase">yrs</span>
                         </div>
                     </div>
                     <div className="relative pt-2">
@@ -133,7 +133,7 @@ export function BiometricSimulator({ patientId }: { patientId?: string }) {
                             max={100}
                             step={1}
                             onValueChange={(vals) => setSimulation({ simulatedAge: vals[0] })}
-                            className="[&_.range-thumb]:h-5 [&_.range-thumb]:w-5 [&_.range-thumb]:bg-white [&_.range-thumb]:border-none [&_.range-track]:bg-white/30 [&_.range-range]:bg-emerald-500 h-2"
+                            className="[&_.range-thumb]:h-5 [&_.range-thumb]:w-5 [&_.range-thumb]:bg-background [&_.range-thumb]:border-[2px] [&_.range-thumb]:border-primary [&_.range-track]:bg-secondary [&_.range-range]:bg-primary h-2"
                         />
                     </div>
                 </div>

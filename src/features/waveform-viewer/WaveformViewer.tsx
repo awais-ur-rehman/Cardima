@@ -71,12 +71,12 @@ export function WaveformViewer({ patientId = 'demo' }: WaveformViewerProps) {
         canvas.style.width = `${totalWidth}px`;
         canvas.style.height = `${totalHeight}px`;
 
-        // Clear
-        ctx.fillStyle = '#121620';
+        // Clear - Use explicit light bg for canvas
+        ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, totalWidth, totalHeight);
 
         // Draw Grid
-        ctx.strokeStyle = '#1e293b';
+        ctx.strokeStyle = '#E2E8F0'; // Divider Mist
         ctx.lineWidth = 0.5;
 
         // Horizontal grid lines
@@ -89,7 +89,7 @@ export function WaveformViewer({ patientId = 'demo' }: WaveformViewerProps) {
 
         // Draw Signals
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = '#10b981'; // Emerald-500
+        ctx.strokeStyle = '#0059b2'; // Clinical Blue
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
@@ -109,36 +109,36 @@ export function WaveformViewer({ patientId = 'demo' }: WaveformViewerProps) {
             ctx.stroke();
 
             // Label
-            ctx.font = 'bold 12px monospace';
-            ctx.fillStyle = '#ffffff30';
+            ctx.font = 'bold 12px Inter, sans-serif';
+            ctx.fillStyle = '#1E293B'; // Deep Charcoal
             ctx.fillText(leadKey, 12, index * rowHeight + 24);
         });
 
     }, [signalData]);
 
     return (
-        <Card className="shadow-none border border-white/5 bg-[#121620]/50 backdrop-blur-sm overflow-hidden h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-white/5 space-y-0 shrink-0">
+        <Card className="shadow-none border border-border bg-card text-card-foreground overflow-hidden h-full flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-border space-y-0 shrink-0">
                 <div className="space-y-1">
                     <CardTitle className="text-lg font-heading flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-emerald-400" />
+                        <Activity className="h-4 w-4 text-primary" />
                         Clinical 12-Lead Telemetry
                     </CardTitle>
-                    <CardDescription className="font-mono text-xs text-emerald-500/50">
+                    <CardDescription className="font-mono text-xs text-primary/60">
                         {isLoading ? 'Retrieving Signal...' : signalData ? `Sampling: ${signalData.samplingRate}Hz | Mode: High-Fidelity` : 'No Signal Data'}
                     </CardDescription>
                 </div>
-                <Badge variant="outline" className="border-white/10 text-white/40 bg-white/5 font-mono text-[10px]">
+                <Badge variant="outline" className="border-border text-muted-foreground bg-muted font-mono text-[10px]">
                     STATIC REVIEW
                 </Badge>
             </CardHeader>
             <CardContent className="p-0 relative flex-1 overflow-x-auto overflow-y-auto" ref={containerRef}>
                 {isLoading ? (
-                    <div className="flex items-center justify-center h-full text-white/20 font-mono text-sm">
+                    <div className="flex items-center justify-center h-full text-muted-foreground font-mono text-sm">
                         Loading high-fidelity signal data...
                     </div>
                 ) : !signalData ? (
-                    <div className="flex items-center justify-center h-full text-white/10 font-mono text-sm">
+                    <div className="flex items-center justify-center h-full text-muted-foreground/50 font-mono text-sm">
                         Select a clinical record to visualize telemetry
                     </div>
                 ) : (
